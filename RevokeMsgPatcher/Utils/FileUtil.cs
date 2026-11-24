@@ -16,8 +16,16 @@ namespace RevokeMsgPatcher.Utils
         /// <returns></returns>
         public static string GetFileVersion(string path)
         {
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(path);
-            return fileVersionInfo.FileVersion;
+            if (File.Exists(path))
+            {
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(path);
+                return fileVersionInfo.FileVersion;
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
         /// <summary>
@@ -27,6 +35,7 @@ namespace RevokeMsgPatcher.Utils
         /// <returns></returns>
         public static string ComputeFileSHA1(string s)
         {
+            File.SetAttributes(s, FileAttributes.Normal);
             FileStream file = new FileStream(s, FileMode.Open);
             SHA1 sha1 = new SHA1CryptoServiceProvider();
             byte[] retval = sha1.ComputeHash(file);
@@ -70,7 +79,18 @@ namespace RevokeMsgPatcher.Utils
                 foreach (Change change in changes)
                 {
                     stream.Seek(change.Position, SeekOrigin.Begin);
-                    stream.Write(change.Content, 0, change.Content.Length);
+                    foreach(byte b in change.Content)
+                    {
+                        // 跳过通配符
+                        if(b == 0x3F)
+                        {
+                            stream.ReadByte();
+                        }
+                        else
+                        {
+                            stream.WriteByte(b);
+                        }
+                    }
                 }
             }
         }

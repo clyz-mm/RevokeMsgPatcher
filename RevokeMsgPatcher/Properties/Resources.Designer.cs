@@ -19,7 +19,7 @@ namespace RevokeMsgPatcher.Properties {
     // 类通过类似于 ResGen 或 Visual Studio 的工具自动生成的。
     // 若要添加或移除成员，请编辑 .ResX 文件，然后重新运行 ResGen
     // (以 /str 作为命令选项)，或重新生成 VS 项目。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,7 +61,7 @@ namespace RevokeMsgPatcher.Properties {
         }
         
         /// <summary>
-        ///   查找类似 {&quot;Apps&quot;:{&quot;Wechat&quot;:{&quot;Name&quot;:&quot;Wechat&quot;,&quot;FileTargetInfos&quot;:{&quot;WeChatWin.dll&quot;:{&quot;Name&quot;:&quot;WeChatWin.dll&quot;,&quot;RelativePath&quot;:&quot;WeChatWin.dll&quot;,&quot;Memo&quot;:null}},&quot;FileModifyInfos&quot;:{&quot;WeChatWin.dll&quot;:[{&quot;Name&quot;:&quot;WeChatWin.dll&quot;,&quot;Version&quot;:&quot;2.8.0.112&quot;,&quot;SHA1Before&quot;:&quot;7497fc006f061799138aa33419280e41891a7981&quot;,&quot;SHA1After&quot;:&quot;07e681be40af32738d59a9332fe966c83c05e455&quot;,&quot;Changes&quot;:[{&quot;Position&quot;:2682233,&quot;Content&quot;:[235]},{&quot;Position&quot;:8289040,&quot;Content&quot;:[195]}]},{&quot;Name&quot;:&quot;WeChatWin.dll&quot;,&quot;Version&quot;:&quot;2.8.0.106&quot;,&quot;SHA1Before&quot;:&quot;e772c81c8a1b79cac77b22dbe67b375fa [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///   查找类似 {&quot;Apps&quot;:{&quot;Wechat&quot;:{&quot;Name&quot;:&quot;WeChat&quot;,&quot;FileTargetInfos&quot;:{&quot;WeChatWin.dll&quot;:{&quot;Name&quot;:&quot;WeChatWin.dll&quot;,&quot;RelativePath&quot;:&quot;WeChatWin.dll&quot;,&quot;Memo&quot;:null,&quot;StartVersion&quot;:&quot;1.0.0.0&quot;,&quot;EndVersion&quot;:null,&quot;RelativePathForVersion&quot;:null},&quot;WeChat.exe&quot;:{&quot;Name&quot;:&quot;WeChat.exe&quot;,&quot;RelativePath&quot;:&quot;../WeChat.exe&quot;,&quot;Memo&quot;:null,&quot;StartVersion&quot;:&quot;3.7.0.0&quot;,&quot;EndVersion&quot;:&quot;3.7.0.26&quot;,&quot;RelativePathForVersion&quot;:null}},&quot;FileModifyInfos&quot;:{&quot;WeChat.exe&quot;:[],&quot;WeChatWin.dll&quot;:[{&quot;Name&quot;:&quot;WeChatWin.dll&quot;,&quot;Version&quot;:&quot;3.3.5.25&quot;,&quot;SHA1Before&quot;:&quot;3e94753ccbc2799d98f3c741377e99bd [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string PatchJson {
             get {

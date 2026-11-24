@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -8,9 +8,10 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>RevokeMsgPatcher</RootNamespace>
     <AssemblyName>RevokeMsgPatcher</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -74,14 +75,17 @@
     <Compile Include="Model\Bag.cs" />
     <Compile Include="Model\Change.cs" />
     <Compile Include="Model\CommonModifyInfo.cs" />
+    <Compile Include="Model\Json\ReleaseApiRes.cs" />
     <Compile Include="Model\ModifyInfo.cs" />
     <Compile Include="Model\ReplacePattern.cs" />
     <Compile Include="Model\TargetInfo.cs" />
     <Compile Include="Modifier\AppModifier.cs" />
     <Compile Include="Modifier\FileHexEditor.cs" />
     <Compile Include="Modifier\QQLiteModifier.cs" />
+    <Compile Include="Modifier\QQNTModifier.cs" />
     <Compile Include="Modifier\QQModifier.cs" />
     <Compile Include="Modifier\TIMModifier.cs" />
+    <Compile Include="Modifier\WeixinModifier.cs" />
     <Compile Include="Modifier\WechatModifier.cs" />
     <Compile Include="Utils\ByteUtil.cs" />
     <Compile Include="Utils\Device.cs" />
@@ -125,5 +129,6 @@
   <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

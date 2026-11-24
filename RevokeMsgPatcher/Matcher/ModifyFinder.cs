@@ -1,7 +1,9 @@
-﻿using RevokeMsgPatcher.Model;
+using RevokeMsgPatcher.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace RevokeMsgPatcher.Matcher
 {
@@ -10,32 +12,42 @@ namespace RevokeMsgPatcher.Matcher
         // TODO 该逻辑需要优化！
         public static List<Change> FindChanges(string path, List<ReplacePattern> replacePatterns)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             // 读取整个文件(dll)
             byte[] fileByteArray = File.ReadAllBytes(path);
+            Console.WriteLine("读取文件耗时：{0}ms.", sw.Elapsed.TotalMilliseconds);
 
             List<Change> changes = new List<Change>(); // 匹配且需要替换的地方
+            Dictionary<ReplacePattern, bool> searchMatches = new Dictionary<ReplacePattern, bool>();
 
             // 查找所有替换点
             int matchNum = 0; // 匹配数量
             foreach (ReplacePattern pattern in replacePatterns)
             {
+                sw.Restart();
                 // 所有的匹配点位
                 int[] matchIndexs = FuzzyMatcher.MatchAll(fileByteArray, pattern.Search);
-                if (matchIndexs.Length == 1)
+                searchMatches[pattern] = matchIndexs.Length > 0;
+                Console.WriteLine("匹配{0}耗时：{1}ms.", pattern.Category, sw.Elapsed.TotalMilliseconds);
+                if (matchIndexs.Length >= 1)
                 {
-                    matchNum++;
-                    // 与要替换的串不一样才需要替换（当前的特征肯定不一样）
-                    if (!FuzzyMatcher.IsEqual(fileByteArray, matchIndexs[0], pattern.Replace))
+                    for (int i = 0; i < matchIndexs.Length; i++)
                     {
-                        changes.Add(new Change(matchIndexs[0], pattern.Replace));
+                        matchNum++;
+                        // 与要替换的串不一样才需要替换（当前的特征肯定不一样）
+                        if (!FuzzyMatcher.IsEqual(fileByteArray, matchIndexs[i], pattern.Replace))
+                        {
+                            changes.Add(new Change(matchIndexs[i], pattern.Replace));
+                        }
                     }
                 }
             }
 
-            // 匹配数和期望的匹配数不一致时报错（当前一个特征只会出现一次）
-            if (matchNum != replacePatterns.Count)
+            // 匹配数和期望的匹配数不一致时报错（当前一个特征会出现多次）
+            if (matchNum < replacePatterns.Count)
             {
-                Tuple<bool, SortedSet<string>> res = IsAllReplaced(fileByteArray, replacePatterns);
+                Tuple<bool, SortedSet<string>> res = IsAllReplaced(fileByteArray, replacePatterns, searchMatches);
                 if (res.Item1)
                 {
                     throw new BusinessException("match_already_replace", "特征比对：当前应用已经安装了对应功能的补丁！");
@@ -81,26 +93,38 @@ namespace RevokeMsgPatcher.Matcher
 
         public static SortedSet<string> FindReplacedFunction(string path, List<ReplacePattern> replacePatterns)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             byte[] fileByteArray = File.ReadAllBytes(path);
+            Console.WriteLine("读取文件耗时：{0}ms.", sw.Elapsed.TotalMilliseconds);
+            sw.Restart();
             Tuple<bool, SortedSet<string>> res = IsAllReplaced(fileByteArray, replacePatterns);
+            Console.WriteLine("匹配耗时：{0}ms.", sw.Elapsed.TotalMilliseconds);
             return res.Item2;
         }
 
-        private static Tuple<bool, SortedSet<string>> IsAllReplaced(byte[] fileByteArray, List<ReplacePattern> replacePatterns)
+        private static Tuple<bool, SortedSet<string>> IsAllReplaced(byte[] partByteArray, List<ReplacePattern> replacePatterns,
+            Dictionary<ReplacePattern, bool> searchMatches = null)
         {
             int matchNum = 0;
             SortedSet<string> alreadyReplaced = new SortedSet<string>(); // 已经被替换特征的功能
             foreach (ReplacePattern pattern in replacePatterns)
             {
-                // 所有的匹配点位
-                int[] matchIndexs = FuzzyMatcher.MatchAll(fileByteArray, pattern.Replace);
-                if (matchIndexs.Length == 1)
+                // 复用本轮已扫描的结果；仅判断存在性时找到首个匹配即可结束。
+                bool searchFound;
+                int firstShift;
+                if (searchMatches == null || !searchMatches.TryGetValue(pattern, out searchFound))
+                {
+                    searchFound = FuzzyMatcher.TryMatch(partByteArray, pattern.Search, out firstShift);
+                }
+                // 查找串没有，但是替换串存在，也就是说明这个功能已经完全完成替换
+                if (!searchFound && FuzzyMatcher.TryMatch(partByteArray, pattern.Replace, out firstShift))
                 {
                     matchNum++;
                     alreadyReplaced.Add(pattern.Category);
                 }
             }
-            return new Tuple<bool, SortedSet<string>>(matchNum == replacePatterns.Count, alreadyReplaced);
+            return new Tuple<bool, SortedSet<string>>(matchNum >= replacePatterns.Count, alreadyReplaced);
         }
     }
 }
